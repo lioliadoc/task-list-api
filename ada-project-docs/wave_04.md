@@ -152,7 +152,7 @@ Press "Send" and see the Slack message come through!
 
 ### Modify `/tasks/<task_id>/mark_complete` to Call the Slack API
 
-Now that we've verified that we can successfully make a request to the Slack API, let's write some code to automatically call the Slack API from the API we've created!
+Now that we've verified that we can successfully make a request to the Slack API, let's write some code to automatically call the Slack API from the API we've created!#
 
 Given a task that has:
 

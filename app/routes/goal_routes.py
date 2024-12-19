@@ -4,9 +4,9 @@ from app.models.task import Task
 from .route_utilities import validate_model, create_model, get_models_with_filters
 from ..db import db
 
-goal_bp = Blueprint("goal_bp", __name__, url_prefix="/goals")
+bp = Blueprint("goal_bp", __name__, url_prefix="/goals")
 
-@goal_bp.post("")
+@bp.post("")
 def create_goal():
     request_body = request.get_json()
     if "title" not in request_body or not request_body["title"]:
@@ -17,22 +17,21 @@ def create_goal():
 
     return {"goal": goal_dict}, status_code
 
-@goal_bp.get("")
+@bp.get("")
 def get_goal():
 
     goals_response = get_models_with_filters(Goal)
     return goals_response, 200
     
 
-@goal_bp.get("/<goal_id>")
+@bp.get("/<goal_id>")
 def get_one_goal(goal_id):
     goal = validate_model(Goal, goal_id)
-    if not goal:
-        return {"error": "Goal not found"}, 404
+   
     return {"goal":goal.to_dict()}
 
 
-@goal_bp.put("<goal_id>")
+@bp.put("<goal_id>")
 def update_one_goal(goal_id):
     goal = validate_model(Goal, goal_id)
     request_body = request.get_json()
@@ -43,11 +42,9 @@ def update_one_goal(goal_id):
     return {"goal": goal.to_dict()}, 200
  
 
-@goal_bp.delete("<goal_id>")
+@bp.delete("<goal_id>")
 def delete_goal(goal_id):
     goal = validate_model(Goal, goal_id)
-    if not goal:
-        return {"error": "Goal not found"}, 404
     
     db.session.delete(goal)
     db.session.commit()
@@ -57,7 +54,7 @@ def delete_goal(goal_id):
     }
     return response, 200
 
-@goal_bp.post("/<goal_id>/tasks")
+@bp.post("/<goal_id>/tasks")
 def associate_tasks_with_goal(goal_id):
     goal = validate_model(Goal, goal_id) 
     request_body = request.get_json()
@@ -74,7 +71,7 @@ def associate_tasks_with_goal(goal_id):
         "task_ids": task_ids
     }, 200
 
-@goal_bp.get("/<goal_id>/tasks")
+@bp.get("/<goal_id>/tasks")
 def get_tasks_of_goal(goal_id):
     goal = validate_model(Goal, goal_id)  
     

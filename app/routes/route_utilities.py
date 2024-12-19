@@ -27,13 +27,22 @@ def create_model(cls, model_data):
 
     return new_model.to_dict(), 201
 
-def get_models_with_filters(cls, filters=None):
+def get_models_with_filters(cls, filters=None, sort_by=None, sort_order='asc'):
     query = db.select(cls)
 
     if filters:
         for attribute, value in filters.items():
             if hasattr(cls, attribute):
                 query = query.where(getattr(cls, attribute).ilike(f"%{value}%"))
+    if sort_by and hasattr(cls, sort_by):
+        sort_attr = getattr(cls, sort_by)
+        if sort_order == 'asc':
+            query = query.order_by(sort_attr.asc())
+        elif sort_order == 'desc':
+            query = query.order_by(sort_attr.desc())
+        else:
+            query = query.order_by(cls,id)
+
     
     models = db.session.scalars(query.order_by(cls.id))
     models_response = [model.to_dict() for model in models]
